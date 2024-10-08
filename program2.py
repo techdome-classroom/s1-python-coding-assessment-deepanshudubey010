@@ -1,6 +1,5 @@
 def decode_message( s: str, p: str) -> bool:
 
-# write your code here
   def is_match(secret, pattern):
     m = len(secret)
     n = len(pattern)

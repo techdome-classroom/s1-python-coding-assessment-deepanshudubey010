@@ -1,53 +1,34 @@
 def decode_message( s: str, p: str) -> bool:
 
 # write your code here
-  def count_islands(grid):
-    if not grid:
-        return 0
+  def is_match(secret, pattern):
+    m = len(secret)
+    n = len(pattern)
+
+    # Create a 2D DP array with (m+1) x (n+1)
+    dp = [[False] * (n + 1) for _ in range(m + 1)]
+
+    # Base case: empty pattern matches empty secret
+    dp[0][0] = True
+
+    # Fill the first row for patterns that consist solely of '*'
+    for j in range(1, n + 1):
+        if pattern[j - 1] == '*':
+            dp[0][j] = dp[0][j - 1]
     
-    rows = len(grid)
-    cols = len(grid[0])
-    island_count = 0
-
-    def dfs(r, c):
-        # Check for out of bounds and if it's water
-        if r < 0 or r >= rows or c < 0 or c >= cols or grid[r][c] == 'W':
-            return
-        # Mark the land as visited by setting it to water
-        grid[r][c] = 'W'
-        # Explore all four possible directions (up, down, left, right)
-        dfs(r + 1, c)  # Down
-        dfs(r - 1, c)  # Up
-        dfs(r, c + 1)  # Right
-        dfs(r, c - 1)  # Left
-
-    # Traverse the entire grid
-    for r in range(rows):
-        for c in range(cols):
-            # If we find land, we found an island
-            if grid[r][c] == 'L':
-                island_count += 1
-                # Use DFS to mark all connected land as visited
-                dfs(r, c)
-
-    return island_count
+    # Fill the DP table
+    for i in range(1, m + 1):
+        for j in range(1, n + 1):
+            if pattern[j - 1] == secret[i - 1] or pattern[j - 1] == '?':
+                dp[i][j] = dp[i - 1][j - 1]
+            elif pattern[j - 1] == '*':
+                dp[i][j] = dp[i - 1][j] or dp[i][j - 1]
+    
+    return dp[m][n]
 
 # Example test cases
-dispatch1 = [
-    ["L", "L", "L", "L", "W"],
-    ["L", "L", "W", "L", "W"],
-    ["L", "L", "W", "W", "W"],
-    ["W", "W", "W", "W", "W"],
-]
-
-dispatch2 = [
-    ["L", "L", "W", "W", "W"],
-    ["L", "L", "W", "W", "W"],
-    ["W", "W", "L", "W", "W"],
-    ["W", "W", "W", "L", "L"],
-]
-
-print(count_islands(dispatch1))  
-print(count_islands(dispatch2))
-  
-        return False
+print(is_match("aa", "a"))       # Output: False
+print(is_match("aa", "*"))       # Output: True
+print(is_match("cb", "?a"))      # Output: False
+print(is_match("adceb", "*a*b")) # Output: True
+print(is_match("acdcb", "a*c?b"))# Output: False

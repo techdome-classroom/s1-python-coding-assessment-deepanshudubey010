@@ -1,35 +1,42 @@
-class Solution:
+def numIslands(grid):
+    if not grid:
+        return 0
 
-    def getTotalIsles(self, grid: list[list[str]]) -> int:
-        if not grid or not grid[0]:
-            return 0
+    num_islands = 0
 
-        self.rows = len(grid)
-        self.cols = len(grid[0])
-        self.grid = grid
-        island_count = 0
+    def dfs(i, j):
+        if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == 'W':
+            return
 
-        # DFS function to explore the island
-        def dfs(r, c):
-            # Check for out of bounds and water
-            if r < 0 or r >= self.rows or c < 0 or c >= self.cols or self.grid[r][c] == 'W':
-                return
-            
-            # Mark the land as visited
-            self.grid[r][c] = 'W'  # Change 'L' to 'W'
-            
-            # Explore all four directions
-            dfs(r - 1, c)  # Up
-            dfs(r + 1, c)  # Down
-            dfs(r, c - 1)  # Left
-            dfs(r, c + 1)  # Right
+        grid[i][j] = 'W'  # Mark the land as water
 
-        # Traverse the grid
-        for r in range(self.rows):
-            for c in range(self.cols):
-                # If we find land, it's a new island
-                if self.grid[r][c] == 'L':
-                    island_count += 1
-                    dfs(r, c)  # Use DFS to mark all connected land
+        # Explore all four directions
+        dfs(i + 1, j)
+        dfs(i - 1, j)
+        dfs(i, j + 1)
+        dfs(i, j - 1)
 
-        return island_count
+    for i in range(len(grid)):
+        for j in range(len(grid[0])):
+            if grid[i][j] == 'L':
+                num_islands += 1
+                dfs(i, j)
+
+    return num_islands
+
+dispatch1 = [
+    ["L", "L", "L", "L", "W"],
+    ["L", "L", "W", "L", "W"],
+    ["L", "L", "W", "W", "W"],
+    ["W", "W", "W", "W", "W"],
+]
+print(numIslands(dispatch1))  # Output: 1
+
+dispatch2 = [
+    ["L", "L", "W", "W", "W"],
+    ["L", "L", "W", "W", "W"],
+    ["W", "W", "L", "W", "W"],
+    ["W", "W", "W", "L", "L"],
+]
+print(numIslands(dispatch2))  # Output: 3
+
